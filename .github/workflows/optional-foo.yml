@@ -4,7 +4,8 @@ on:
   pull_request:
 
 jobs:
-  fail:
+  task:
+    name: optional-task
     runs-on: ubuntu-latest
     steps:
       - run: |
