@@ -23,5 +23,6 @@ jobs:
         with:
           context: 'automerge-gate/all-passed'
           poll-interval-seconds: '15'
-          ignore-apps: |
-            github-actions
+          ignore-checks: |
+            optional-*
+            optional-* / *
