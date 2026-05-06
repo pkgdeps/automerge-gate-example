@@ -1,0 +1,12 @@
+name: should-fail
+
+on:
+  pull_request:
+
+jobs:
+  fail:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "intentional failure for TC3"
+          exit 1
