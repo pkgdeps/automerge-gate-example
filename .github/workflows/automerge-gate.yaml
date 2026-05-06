@@ -1,0 +1,25 @@
+name: automerge-gate
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, auto_merge_enabled]
+
+permissions:
+  statuses: write
+  checks: read
+  pull-requests: read
+  actions: read
+
+concurrency:
+  group: automerge-gate-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: pkgdeps/automerge-gate@v1.0.0
+        with:
+          context: 'automerge-gate/all-passed'
+          poll-interval-seconds: '15'
