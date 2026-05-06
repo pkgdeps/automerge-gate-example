@@ -23,4 +23,3 @@ jobs:
         with:
           context: 'automerge-gate/all-passed'
           poll-interval-seconds: '15'
-          fork-policy: success
