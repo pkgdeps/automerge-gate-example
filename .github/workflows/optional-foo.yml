@@ -1,0 +1,12 @@
+name: optional-foo
+
+on:
+  pull_request:
+
+jobs:
+  fail:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "intentional optional fail"
+          exit 1
