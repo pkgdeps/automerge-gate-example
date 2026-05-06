@@ -10,7 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: echo "lint passed"
+      - run: |
+          echo "intentional lint failure for TC10e"
+          exit 1
 
   test:
     runs-on: ubuntu-latest
