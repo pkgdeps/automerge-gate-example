@@ -23,5 +23,4 @@ jobs:
         with:
           context: 'automerge-gate/all-passed'
           poll-interval-seconds: '15'
-          ignore-checks: |
-            optional-*
+          fork-policy: success
