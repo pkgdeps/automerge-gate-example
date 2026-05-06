@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   gate:
-    if: github.event.pull_request.head.repo.id == github.event.pull_request.base.repo.id
+    name: automerge-gate/all-passed
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -24,10 +24,3 @@ jobs:
         with:
           context: 'automerge-gate/all-passed'
           poll-interval-seconds: '15'
-
-  fork-bypass:
-    if: github.event.pull_request.head.repo.id != github.event.pull_request.base.repo.id
-    name: automerge-gate/all-passed
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "fork PR bypass; gating delegated to required ci checks"
