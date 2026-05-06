@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
-          echo "intentional lint failure for TC10e"
+          echo "　nnintentional lint failure for TC10e"
           exit 1
 
   test:
