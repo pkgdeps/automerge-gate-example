@@ -28,3 +28,5 @@ jobs:
           gate-mode: 'private'
           context: 'automerge-gate/all-passed'
           poll-interval-seconds: '15'
+          ignore-apps: |
+            github-actions
