@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   gate:
+    if: github.event.pull_request.head.repo.id == github.event.pull_request.base.repo.id
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
