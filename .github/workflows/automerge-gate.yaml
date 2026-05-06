@@ -3,33 +3,44 @@ name: automerge-gate
 on:
   pull_request:
     types: [opened, synchronize, reopened, auto_merge_enabled]
-
-permissions:
-  statuses: write
-  checks: read
-  pull-requests: read
-  actions: read
+  pull_request_review:
+    types: [submitted]
 
 concurrency:
-  group: automerge-gate-${{ github.event.pull_request.number }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  gate:
-    if: github.event.pull_request.head.repo.id == github.event.pull_request.base.repo.id
+  main-gate:
+    if: >-
+      github.event.pull_request.head.repo.id == github.event.pull_request.base.repo.id
+      && (github.event_name != 'pull_request_review' || github.event.review.state == 'approved')
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      checks: write
+      pull-requests: read
+      actions: read
     steps:
-      - uses: pkgdeps/automerge-gate@v1.0.0
+      - uses: pkgdeps/automerge-gate@v2.0.0
         with:
+          gate: main
           context: 'automerge-gate/all-passed'
           poll-interval-seconds: '15'
-          ignore-apps: |
-            vercel
 
-  fork-bypass:
-    if: github.event.pull_request.head.repo.id != github.event.pull_request.base.repo.id
+  fork-gate:
+    if: >-
+      github.event.pull_request.head.repo.id != github.event.pull_request.base.repo.id
+      && (github.event_name != 'pull_request_review' || github.event.review.state == 'approved')
     name: automerge-gate/all-passed
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      checks: read
+      pull-requests: read
+      actions: read
     steps:
-      - run: echo "fork PR bypass"
+      - uses: pkgdeps/automerge-gate@v2.0.0
+        with:
+          gate: fork
+          poll-interval-seconds: '15'
