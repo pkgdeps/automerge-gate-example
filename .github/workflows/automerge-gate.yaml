@@ -25,4 +25,3 @@ jobs:
           poll-interval-seconds: '15'
           ignore-checks: |
             optional-*
-            optional-* / *
