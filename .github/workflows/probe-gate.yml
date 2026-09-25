@@ -20,7 +20,7 @@ jobs:
       pull-requests: read
       actions: read
     steps:
-      - uses: pkgdeps/automerge-gate@935fd39d46855c00b7b3972eace56f7058b25fad # v5.0.3
+      - uses: pkgdeps/automerge-gate@6ed8b412093d2c386e4a08a8ada6ce639f82c29d # fix branch claude/project-thread-2xexyr
         with:
           gate-mode: 'private'
           context: 'probe/all-passed'
