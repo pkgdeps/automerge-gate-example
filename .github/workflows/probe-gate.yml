@@ -1,10 +1,11 @@
-# Public-mode gate used only to observe PR #41. Its job name is not the
-# required check, so it never allows a merge.
+# Private-mode gate used only to observe PR automerge-gate#42. It writes
+# `probe/all-passed`, which is not the required check, and the branch
+# removes automerge-gate.yaml, so this PR never satisfies the ruleset.
 name: probe-gate
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, labeled]
+    types: [opened, synchronize, reopened, auto_merge_enabled]
 
 jobs:
   probe-gate:
@@ -14,31 +15,24 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
+      statuses: write
       checks: read
       pull-requests: read
       actions: read
     steps:
-      - uses: pkgdeps/automerge-gate@d67120fd3763cad75cae75408da4447a174cc398 # claude/project-thread-cdc9c3
+      - uses: pkgdeps/automerge-gate@337f67124d7a5964920023d5256d647b6c6f4f67 # PR #42
         with:
-          gate-mode: 'public'
+          gate-mode: 'private'
+          context: 'probe/all-passed'
           poll-interval-seconds: '10'
-      - name: Dump check runs, annotations and workflow runs
+      - name: Dump check runs and workflow runs
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
           SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          echo "::group::check-runs"
           gh api "repos/$GITHUB_REPOSITORY/commits/$SHA/check-runs?filter=all&per_page=100" \
-            --jq '.check_runs[] | {id, name, status, conclusion, started_at, completed_at, suite: .check_suite.id, app: .app.slug, details_url}'
-          echo "::endgroup::"
-          echo "::group::annotations of cancelled runs"
-          for id in $(gh api "repos/$GITHUB_REPOSITORY/commits/$SHA/check-runs?filter=all&per_page=100" --jq '.check_runs[] | select(.conclusion=="cancelled") | .id'); do
-            echo "check_run $id:"
-            gh api "repos/$GITHUB_REPOSITORY/check-runs/$id/annotations" --jq '.[] | {annotation_level, title, message, path}'
-          done
-          echo "::endgroup::"
-          echo "::group::workflow runs"
+            --jq '.check_runs[] | {id, name, conclusion, suite: .check_suite.id}'
           gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$SHA&per_page=100" \
-            --jq '.workflow_runs[] | {id, name, path, event, status, conclusion, run_attempt, check_suite_id, created_at}'
-          echo "::endgroup::"
+            --jq '.workflow_runs[] | {id, name, event, conclusion, check_suite_id}'
+          gh api "repos/$GITHUB_REPOSITORY/commits/$SHA/statuses" --jq '.[] | {context, state, description}'
