@@ -20,7 +20,7 @@ jobs:
       pull-requests: read
       actions: read
     steps:
-      - uses: pkgdeps/automerge-gate@b08bd15784af0d7070df07dda49c328b8bdd4489 # PR #42
+      - uses: pkgdeps/automerge-gate@1163c9c5e56ab8b18afdbfa624025e3c93bc2bb2 # PR #42
         with:
           gate-mode: 'private'
           context: 'probe/all-passed'
@@ -49,7 +49,7 @@ jobs:
       checks: read
       pull-requests: read
     steps:
-      - uses: pkgdeps/automerge-gate@b08bd15784af0d7070df07dda49c328b8bdd4489 # PR #42
+      - uses: pkgdeps/automerge-gate@1163c9c5e56ab8b18afdbfa624025e3c93bc2bb2 # PR #42
         with:
           gate-mode: 'private'
           context: 'probe/no-actions-read'
