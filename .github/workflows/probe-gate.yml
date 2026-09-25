@@ -20,7 +20,7 @@ jobs:
       pull-requests: read
       actions: read
     steps:
-      - uses: pkgdeps/automerge-gate@337f67124d7a5964920023d5256d647b6c6f4f67 # PR #42
+      - uses: pkgdeps/automerge-gate@b08bd15784af0d7070df07dda49c328b8bdd4489 # PR #42
         with:
           gate-mode: 'private'
           context: 'probe/all-passed'
@@ -36,3 +36,21 @@ jobs:
           gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$SHA&per_page=100" \
             --jq '.workflow_runs[] | {id, name, event, conclusion, check_suite_id}'
           gh api "repos/$GITHUB_REPOSITORY/commits/$SHA/statuses" --jq '.[] | {context, state, description}'
+
+  # Expected to fail fast: the token has no `actions: read`.
+  probe-gate-no-actions-read:
+    concurrency:
+      group: ${{ github.workflow }}-no-actions-${{ github.ref }}
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      statuses: write
+      checks: read
+      pull-requests: read
+    steps:
+      - uses: pkgdeps/automerge-gate@b08bd15784af0d7070df07dda49c328b8bdd4489 # PR #42
+        with:
+          gate-mode: 'private'
+          context: 'probe/no-actions-read'
+          poll-interval-seconds: '10'
