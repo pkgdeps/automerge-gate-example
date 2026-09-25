@@ -1,0 +1,48 @@
+name: automerge-gate
+description: |
+  Polls check_run results for a PR and reports the aggregate as either a
+  commit status (gate-mode: private, via the legacy Commit Status API) or
+  the gate job's own check_run conclusion (gate-mode: public, via the
+  job's exit code). Single-job pattern; no race.
+author: azu
+
+branding:
+  icon: check-circle
+  color: green
+
+inputs:
+  gate-mode:
+    description: 'Gate variant. "private" = cost-optimized for repos with no external fork PRs (action writes the aggregated commit status via the legacy Commit Status API). "public" = simpler model for fork-accepting repos (the gate signal is the JOB exit code; the job name must match the required-check context).'
+    required: true
+  context:
+    description: 'Aggregated commit status context (gate-mode: private only). Must match the required check in your ruleset. Ignored when gate-mode: public — the job name is the signal.'
+    required: false
+    default: 'automerge-gate/all-passed'
+  poll-interval-seconds:
+    description: 'How often (seconds) to re-fetch check status during the polling loop'
+    required: false
+    default: '30'
+  ignore-checks:
+    description: 'JSONC array of rules to exclude check_runs from aggregation. Each rule is an object with optional fields: app (GitHub App slug), workflow (workflow file basename, e.g. ci.yaml), name (check_run name). Fields are AND-evaluated; glob (* / ?) supported on every field. Using `workflow` requires the workflow''s token to have `actions: read` — the action resolves each run''s workflow path via the Actions API, and without that scope the rule silently never matches. Example: ''[{"name":"optional-*"},{"app":"dependabot"},{"app":"xcode-cloud","name":"Build *"},{"workflow":"ci-go.yaml","name":"lint"}]''.'
+    required: false
+    default: '[]'
+  token:
+    description: 'GitHub token used to read checks and (when permitted) write the aggregated commit status'
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  state:
+    description: 'Final state: success, failure, or skipped'
+  total-checks:
+    description: 'Number of check_runs observed before filtering'
+  evaluated-checks:
+    description: 'Number of check_runs after filtering'
+  completed-checks:
+    description: 'Number of completed check_runs after filtering'
+  polled-iterations:
+    description: 'Number of polling iterations performed'
+
+runs:
+  using: 'node24'
+  main: 'dist/index.js'

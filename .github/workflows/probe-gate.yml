@@ -15,12 +15,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
+      contents: read
       statuses: write
       checks: read
       pull-requests: read
       actions: read
     steps:
-      - uses: pkgdeps/automerge-gate@744c0b5640eb0e82890ab9e769e9452a71d701f6 # v5.0.2
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/gate-dev # automerge-gate 5689e79 (local build, not pushed)
         with:
           gate-mode: 'private'
           context: 'probe/all-passed'
