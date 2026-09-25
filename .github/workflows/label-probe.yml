@@ -1,0 +1,21 @@
+# Job whose verdict depends on a PR label read from the event payload.
+# `breaking` fails unless the PR has `probe-ok`, and is skipped when the
+# PR has `probe-skip`. Used to observe how automerge-gate judges a failed
+# job in a run replaced by a newer `labeled` run on the same SHA.
+name: label-probe
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+jobs:
+  breaking:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'probe-skip') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require the probe-ok label
+        env:
+          OK: ${{ contains(github.event.pull_request.labels.*.name, 'probe-ok') }}
+        run: |
+          echo "probe-ok present: $OK"
+          test "$OK" = "true"

@@ -1,0 +1,38 @@
+# Private-mode gate used only to observe automerge-gate. It writes
+# `probe/all-passed`, which is not the required check, and the branch
+# removes automerge-gate.yaml, so this PR never satisfies the ruleset.
+name: probe-gate
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+
+jobs:
+  probe-gate:
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      statuses: write
+      checks: read
+      pull-requests: read
+      actions: read
+    steps:
+      - uses: pkgdeps/automerge-gate@935fd39d46855c00b7b3972eace56f7058b25fad # v5.0.3
+        with:
+          gate-mode: 'private'
+          context: 'probe/all-passed'
+          poll-interval-seconds: '10'
+      - name: Dump check runs and workflow runs
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/commits/$SHA/check-runs?filter=all&per_page=100" \
+            --jq '.check_runs[] | {id, name, conclusion, suite: .check_suite.id}'
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$SHA&per_page=100" \
+            --jq '.workflow_runs[] | {id, name, event, conclusion, check_suite_id}'
+          gh api "repos/$GITHUB_REPOSITORY/commits/$SHA/statuses" --jq '.[] | {context, state, description}'
