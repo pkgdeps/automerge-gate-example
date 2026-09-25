@@ -1,4 +1,4 @@
-# Private-mode gate used only to observe PR automerge-gate#42. It writes
+# Private-mode gate used only to observe automerge-gate v5.0.2. It writes
 # `probe/all-passed`, which is not the required check, and the branch
 # removes automerge-gate.yaml, so this PR never satisfies the ruleset.
 name: probe-gate
@@ -20,7 +20,7 @@ jobs:
       pull-requests: read
       actions: read
     steps:
-      - uses: pkgdeps/automerge-gate@1163c9c5e56ab8b18afdbfa624025e3c93bc2bb2 # PR #42
+      - uses: pkgdeps/automerge-gate@744c0b5640eb0e82890ab9e769e9452a71d701f6 # v5.0.2
         with:
           gate-mode: 'private'
           context: 'probe/all-passed'
@@ -37,20 +37,3 @@ jobs:
             --jq '.workflow_runs[] | {id, name, event, conclusion, check_suite_id}'
           gh api "repos/$GITHUB_REPOSITORY/commits/$SHA/statuses" --jq '.[] | {context, state, description}'
 
-  # Expected to fail fast: the token has no `actions: read`.
-  probe-gate-no-actions-read:
-    concurrency:
-      group: ${{ github.workflow }}-no-actions-${{ github.ref }}
-      cancel-in-progress: true
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    permissions:
-      statuses: write
-      checks: read
-      pull-requests: read
-    steps:
-      - uses: pkgdeps/automerge-gate@1163c9c5e56ab8b18afdbfa624025e3c93bc2bb2 # PR #42
-        with:
-          gate-mode: 'private'
-          context: 'probe/no-actions-read'
-          poll-interval-seconds: '10'
