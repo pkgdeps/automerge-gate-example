@@ -1,0 +1,22 @@
+# Reproduces pkgdeps/automerge-gate#41: two pull_request events on one SHA
+# start this workflow twice, and cancel-in-progress cancels the first run.
+name: cancel-probe
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  slow:
+    runs-on: ubuntu-latest
+    steps:
+      - run: sleep 60
+  after:
+    needs: slow
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "after passed"
