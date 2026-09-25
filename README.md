@@ -6,3 +6,4 @@ https://github.com/pkgdeps/automerge-gate example repo.
 <!-- pub-TC9 fork PR public mode -->
 Probe for automerge-gate#42 (private mode).
 TC2
+TC-cancel-4
