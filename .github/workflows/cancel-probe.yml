@@ -6,6 +6,8 @@ name: cancel-probe
 on:
   pull_request:
     types: [opened, synchronize, reopened, labeled]
+  push:
+    branches: [claude/project-thread-cdc9c3]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
