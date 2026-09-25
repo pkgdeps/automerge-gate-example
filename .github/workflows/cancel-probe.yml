@@ -1,5 +1,6 @@
 # Reproduces pkgdeps/automerge-gate#41: two pull_request events on one SHA
 # start this workflow twice, and cancel-in-progress cancels the first run.
+# Trigger: push (synchronize), then add a label while `slow` is running.
 name: cancel-probe
 
 on:
