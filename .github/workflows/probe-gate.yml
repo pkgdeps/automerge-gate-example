@@ -18,7 +18,7 @@ jobs:
       pull-requests: read
       actions: read
     steps:
-      - uses: pkgdeps/automerge-gate@v5.0.1
+      - uses: pkgdeps/automerge-gate@d67120fd3763cad75cae75408da4447a174cc398 # claude/project-thread-cdc9c3
         with:
           gate-mode: 'public'
           poll-interval-seconds: '10'
