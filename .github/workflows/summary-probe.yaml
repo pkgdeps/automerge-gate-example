@@ -1,0 +1,18 @@
+name: summary-probe
+
+on:
+  pull_request:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      checks: read
+      pull-requests: read
+      actions: read
+    steps:
+      - uses: pkgdeps/automerge-gate@aaebce4a30b22c98ee846da0d303a12730a36f71
+        with:
+          gate-mode: 'public'
+          poll-interval-seconds: '10'
