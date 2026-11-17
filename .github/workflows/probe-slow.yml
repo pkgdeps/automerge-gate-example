@@ -1,0 +1,19 @@
+# Probe: keeps a check pending long enough to enable auto-merge on a
+# stack while CI is still running. Remove after the probe.
+name: probe-slow
+
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  slow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - run: sleep 600
