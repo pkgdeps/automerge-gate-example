@@ -16,14 +16,14 @@ jobs:
       github.event_name != 'pull_request_review'
       || github.event.review.state == 'approved'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     permissions:
       statuses: write
       checks: read
       pull-requests: read
       actions: read
     steps:
-      - uses: pkgdeps/automerge-gate@139428e45add7c6e6c9d673d5a9b6034e9d7439b # feat/poll-stacked-prs (pkgdeps/automerge-gate#54)
+      - uses: pkgdeps/automerge-gate@e236ff324ef647b5810d1a563739bc8ed9e8caf2 # v5.1.0
         with:
           gate-mode: 'private'
           poll-on-stacked-pull-requests: 'true'
