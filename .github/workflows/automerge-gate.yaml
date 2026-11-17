@@ -29,5 +29,4 @@ jobs:
           poll-on-stacked-pull-requests: 'true'
           context: 'automerge-gate/all-passed'
           poll-interval-seconds: '15'
-          ignore-apps: |
-            vercel
+          ignore-checks: '[{"app":"vercel"}]'
