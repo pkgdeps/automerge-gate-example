@@ -2,7 +2,7 @@ name: automerge-gate
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, auto_merge_enabled]
+    types: [opened, synchronize, reopened, auto_merge_enabled, stacked]
   pull_request_review:
     types: [submitted]
 
@@ -23,9 +23,10 @@ jobs:
       pull-requests: read
       actions: read
     steps:
-      - uses: pkgdeps/automerge-gate@v4.0.0
+      - uses: pkgdeps/automerge-gate@4fb80d901a86ed5bf05b39a63d5bb9ce5b353abd # feat/poll-stacked-prs (pkgdeps/automerge-gate#54)
         with:
           gate-mode: 'private'
+          poll-stacked-pull-requests: 'true'
           context: 'automerge-gate/all-passed'
           poll-interval-seconds: '15'
           ignore-apps: |
